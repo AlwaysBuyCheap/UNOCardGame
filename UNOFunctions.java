@@ -5,6 +5,7 @@ import java.security.SecureRandom;
 
 
 public class UNOFunctions{
+
     final String color_types[] = {"Red","Yellow","Green","Blue"};
     final String numbers[] = {"0","1","2","3","4","5","6","7","8","9"};
     final String SpecialCards[] = {"Jump next player","Switch direction","+2","Change color","+4 and change color"};
@@ -20,7 +21,7 @@ public class UNOFunctions{
     int card;
     int IteratorStart;
     
-    public ArrayList<CardsType> BuildDeck(){
+    ArrayList<CardsType> BuildDeck(){
         
         for(int i=0; i<color_types.length; i++){
             for(int j=0; j<2; j++){
@@ -53,14 +54,14 @@ public class UNOFunctions{
         return this.deck;
     }
 
-    public ArrayList<CardsType> Shuffle(){
+    ArrayList<CardsType> Shuffle(){
         for(int i=0;i<this.deck.size();i++){
             Collections.shuffle(this.deck);
         }
         return this.deck;    
     }
 
-    public ArrayList<ArrayList<CardsType>> DealCards(int NumberPlayers){
+    ArrayList<ArrayList<CardsType>> DealCards(int NumberPlayers){
         for (int i = 0; i < NumberPlayers; i++){
             ArrayList<CardsType> a = new ArrayList<>();
             for(int j = 0; j < 8; j++){
@@ -72,12 +73,12 @@ public class UNOFunctions{
         return PlayersCards;
     }
 
-    public void SpecialCardNotPlayed(){
+    void SpecialCardNotPlayed(){
         if(this.PlayingCard.number.equals(this.SpecialCards[0])){
             ;
         }
         else if(this.PlayingCard.number.equals(this.SpecialCards[1])){
-            Collections.reverse(PlayersCards);
+            Collections.reverse(this.PlayersCards);
         }
         else if(this.PlayingCard.number.equals(this.SpecialCards[2])){
             this.AddMultipleCards(2);
@@ -91,25 +92,30 @@ public class UNOFunctions{
         this.CardPlayed = true;
     }
 
-    public void AddMultipleCards(int NumberOfCards){
+    void AddMultipleCards(int NumberOfCards){
         for(int p = 0; p < NumberOfCards; p++){
             this.PlayersCards.get(player).add(this.deck.get(0));
             this.deck.remove(0);
         }
     }
 
-    public void SpecialCardAlreadyPlayed(){
+    void SpecialCardAlreadyPlayed(){
         IteratorStart = 0;
         FindCardToPlay(); 
         if(this.GotCard == false){
-            this.PlayersCards.get(player).add(deck.get(0)); 
-            this.deck.remove(0);
-            IteratorStart = this.PlayersCards.get(player).size() - 1;
-            FindCardToPlay();
+            GrabCardAndCheckIfICanPlayIt();
         }
     }
 
-    public void FindCardToPlay(){
+    void GrabCardAndCheckIfICanPlayIt(){
+        this.PlayersCards.get(player).add(deck.get(0)); 
+        System.out.println("No card to play, card grabbed " + deck.get(0).color + "   " + deck.get(0).number);
+        this.deck.remove(0);
+        IteratorStart = this.PlayersCards.get(player).size() - 1;
+        FindCardToPlay();
+    }
+
+    void FindCardToPlay(){
         SearchForSameColorInDeck();
         if(this.GotCard == false){  
             SearchForSameNumberInDeck();
@@ -119,34 +125,51 @@ public class UNOFunctions{
         }
     }
 
-    public void SearchForSameColorInDeck(){
+    void SearchForSameColorInDeck(){
         for(card = IteratorStart; card < this.PlayersCards.get(player).size(); card++){
-            if(this.PlayersCards.get(player).get(card).color.equals(this.PlayingColor)){
-                this.PlayCard();
+            CheckIfCardHasSameColor(this.PlayersCards.get(player).get(card).color);
+            if(GotCard == true){
                 break;
             }
         }
     }
 
-    public void SearchForSameNumberInDeck(){
-        for(card = IteratorStart; card < this.PlayersCards.get(player).size(); card++){
-            if(this.PlayersCards.get(player).get(card).number.equals(this.PlayingCard.number)){
-                this.PlayCard();
-                break;
-            }
+    void CheckIfCardHasSameColor(String color){
+        if(color.equals(this.PlayingColor)){
+            this.PlayCard();
         }
     }
 
-    public void SearchForSpecialCardsInDeck(){
+    void SearchForSameNumberInDeck(){
         for(card = IteratorStart; card < this.PlayersCards.get(player).size(); card++){
-            if(this.PlayersCards.get(player).get(card).color.equals(this.SpecialCards[3]) || this.PlayersCards.get(player).get(card).color.equals(this.SpecialCards[4])){
-                this.PlayCard();
+            CheckIfCardHasSameNumber(this.PlayersCards.get(player).get(card).number);
+            if(GotCard == true){
                 break;
-            }
+            }    
         }
     }
 
-    public void PlayCard(){
+    void CheckIfCardHasSameNumber(String number){
+        if(number.equals(this.PlayingCard.number)){
+            this.PlayCard();
+        }
+    }
+
+    void SearchForSpecialCardsInDeck(){
+        for(card = IteratorStart; card < this.PlayersCards.get(player).size(); card++){
+            CheckIfCardIsSpecial(this.PlayersCards.get(player).get(card).color);
+            if(GotCard == true){
+                break;
+            }    
+        }
+    }
+    void CheckIfCardIsSpecial(String card){
+        if(card.equals(this.SpecialCards[3]) || card.equals(this.SpecialCards[4])){
+            this.PlayCard();
+        }
+    }
+
+    void PlayCard(){
         this.CardsPlayed.add(this.PlayingCard);
         this.PlayingCard = this.PlayersCards.get(player).get(card);
         this.AssingnPlayingColor();
@@ -160,7 +183,7 @@ public class UNOFunctions{
         }
     }
 
-    public void AssingnPlayingColor(){
+    void AssingnPlayingColor(){
         if(this.PlayingCard.number.equals(this.SpecialCards[3]) || this.PlayingCard.number.equals(this.SpecialCards[4])){
             this.PlayingColor = this.color_types[this.Random.nextInt(4)];
         }
@@ -169,10 +192,39 @@ public class UNOFunctions{
         }
     }
 
-    public void PlayYourself(){
+    void PlayYourself(){
+        /*
+        for(int i = 0; this.player<PlayersCards.get(player).size(); i++){
+            System.out.println(String.format("%s. %s   %s", i,PlayersCards.get(player).get(i).color,PlayersCards.get(player).get(i).number));
+        }
+        */
+        if(CardPlayed == true){
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Select the card you want to play:");
+            int CardNumber = Integer.parseInt(scanner.nextLine());
+            //scanner.close();
+            card = CardNumber;
+            
+            CheckIfCardHasSameColor(this.PlayersCards.get(player).get(CardNumber).color);
+            if(GotCard == false){
+                CheckIfCardHasSameNumber(this.PlayersCards.get(player).get(CardNumber).number);
+            }
+            if(GotCard == false){
+                CheckIfCardIsSpecial(this.PlayersCards.get(player).get(CardNumber).color);
+            }
+            if(GotCard == false){
+                GrabCardAndCheckIfICanPlayIt();
+            }
+        }
+        else{
+            SpecialCardNotPlayed();
+        }
+        
+        
+
 
     }
-    public void sleep(int seconds){
+    void sleep(int seconds){
         try {
             Thread.sleep(seconds * 1000);
         } catch(InterruptedException e) {
@@ -186,7 +238,7 @@ class CardsType{
     String color;
     String number;
 
-    public CardsType(final String input_color, final String input_number){
+    CardsType(final String input_color, final String input_number){
 
         this.color = input_color;
         this.number = input_number;

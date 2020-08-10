@@ -2,6 +2,7 @@ package elemen;
 
 
 public class console{
+    
     public static void main(String[] args) {
         UNOFunctions functions = new UNOFunctions();
         functions.BuildDeck();
@@ -9,33 +10,49 @@ public class console{
         functions.DealCards(6);
         Boolean end = false;
     
+        CardsType hola = new CardsType("dsadsa", "sdsad");
 
         functions.PlayingCard = functions.deck.get(0);
         
         if(functions.deck.get(0).number.equals(functions.SpecialCards[3]) || functions.deck.get(0).number.equals(functions.SpecialCards[4])){
             functions.PlayingColor = functions.color_types[functions.Random.nextInt(4)];
         }
-        functions.CardPlayed = false;
+        else{
+            functions.PlayingColor = functions.PlayingCard.color;
+        }
+        for(int i=0; i<functions.SpecialCards.length;i++){
+            if(functions.SpecialCards[i].equals(functions.PlayingCard.number)){
+                functions.CardPlayed = false;
+            }
+            else{
+                functions.CardPlayed = true;
+            }
+        }
         
         while(true){
             
-            
             for(functions.player = 0; functions.player < functions.PlayersCards.size(); functions.player++){
-                System.out.print("\n playing card" + functions.PlayingCard.color + "   " + functions.PlayingCard.number);
+                System.out.print("\n playing card " + functions.PlayingCard.color + "   " + functions.PlayingCard.number);
+                System.out.print("\n playing color " + functions.PlayingColor);
                 System.out.println("\n player" + (functions.player+1) + "\n");
                 
                 for(int i = 0; i < functions.PlayersCards.get(functions.player).size(); i++){
                     System.out.println(functions.PlayersCards.get(functions.player).get(i).color + "   " + functions.PlayersCards.get(functions.player).get(i).number);
                 }
                 functions.GotCard = false;
-                if(functions.CardPlayed == true){
-                    functions.SpecialCardAlreadyPlayed();
+                if(functions.player == 13){
+                    functions.PlayYourself();
                 }
                 else{
-                    
-                    functions.SpecialCardNotPlayed();
+                    if(functions.CardPlayed == true){
+                        functions.SpecialCardAlreadyPlayed();
+                    }
+                    else{
+                        functions.SpecialCardNotPlayed();
+                    }
+                
+
                 }
-            
                 functions.sleep(0);
             }        
             for(int z = 0; z < functions.PlayersCards.size(); z++){
