@@ -1,4 +1,4 @@
-package elemen;
+
 import java.util.*;
 import java.security.SecureRandom;
 
@@ -193,11 +193,6 @@ public class UNOFunctions{
     }
 
     void PlayYourself(){
-        /*
-        for(int i = 0; this.player<PlayersCards.get(player).size(); i++){
-            System.out.println(String.format("%s. %s   %s", i,PlayersCards.get(player).get(i).color,PlayersCards.get(player).get(i).number));
-        }
-        */
         if(CardPlayed == true){
             Scanner scanner = new Scanner(System.in);
             System.out.println("Select the card you want to play:");

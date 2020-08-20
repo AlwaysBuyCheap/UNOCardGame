@@ -1,6 +1,3 @@
-package elemen;
-
-
 public class console{
     
     public static void main(String[] args) {
@@ -40,7 +37,7 @@ public class console{
                     System.out.println(functions.PlayersCards.get(functions.player).get(i).color + "   " + functions.PlayersCards.get(functions.player).get(i).number);
                 }
                 functions.GotCard = false;
-                if(functions.player == 13){
+                if(functions.player == 3){
                     functions.PlayYourself();
                 }
                 else{
@@ -53,7 +50,7 @@ public class console{
                 
 
                 }
-                functions.sleep(0);
+                functions.sleep(5);
             }        
             for(int z = 0; z < functions.PlayersCards.size(); z++){
                 
